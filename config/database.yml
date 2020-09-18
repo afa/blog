@@ -1,0 +1,4 @@
+development:
+  url: postgres:///blog_devel
+test:
+  url: postgres:///blog_test

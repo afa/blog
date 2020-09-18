@@ -1,8 +1,8 @@
 class App < Sinatra::Base
   helpers Sinatra::Cookies
   get '/' do
-    user = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
-    DashboardView.new.call(user: user, params: params).to_s
+    account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
+    DashboardView.new.call(account: account, params: params).to_s
   end
 
   get '/login' do
