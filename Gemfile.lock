@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bcrypt (3.1.16)
     concurrent-ruby (1.1.7)
     diff-lcs (1.4.4)
     dry-configurable (0.11.6)
@@ -66,6 +67,7 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.3)
+    pg (1.2.3)
     puma (4.3.6)
       nio4r (~> 2.0)
     rack (2.2.3)
@@ -113,9 +115,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt
   dry-transaction
   dry-validation
   dry-view
+  pg
   puma
   racksh
   rspec
