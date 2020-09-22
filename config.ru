@@ -10,3 +10,7 @@ end
 map '/l' do
   run LinkManager
 end
+
+# map '/c' do
+#   run CitateManager
+# end

@@ -7,7 +7,7 @@ module Link
     private
 
     def take(url_id:)
-      link = FastLink.where(url_id: url_id).first
+      link = FastLink.where(url_key: url_id).first
       return Failure(:not_found) unless link
 
       Success(link.url)
