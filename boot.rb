@@ -9,7 +9,13 @@ def autold(path)
   $LOAD_PATH << path if File.directory?(path)
   Dir[File.join(path, '**/*.rb')].each do |f|
     fl = f.delete_suffix('.rb').delete_prefix(path + '/').delete_prefix(path)
-    autoload(fl.split('/').map { |m| m.split('_').map(&:capitalize).join }.join('::').to_sym, fl)
+    moduls = fl.split('/').map { |m| m.split('_').map(&:capitalize).join }
+    # TODO: need fix for autoload hierarhy
+    if moduls.size == 1
+      autoload(moduls.first.to_sym, fl)
+    else
+      require fl
+    end
   end
 end
 Dir['./app/*'].each { |p| autold(p) }
