@@ -3,4 +3,9 @@ html
   head
     title Afalone
   body
-    == yield
+    .top
+      == render :login_panel
+      == render :menu
+    .content
+      == yield
+    .bottom

@@ -6,7 +6,7 @@ class App < Sinatra::Base
   end
 
   get '/login' do
-    LoginView.new.call.to_s
+    LoginView.new.call(account: nil).to_s
   end
 
   post '/login' do
@@ -21,7 +21,7 @@ class App < Sinatra::Base
     end
   end
 
-  delete '/logout' do
+  post '/logout' do
     cookies[:user] = nil
     redirect '/'
   end
