@@ -1,6 +1,10 @@
 | ok
 .content
   h1 Blog
-  - posts.each do |post|
+  == posts.index
+  // - posts.each do |post|
     .post
-      post
+      .header
+        = post.date
+      .body
+        = post.body
