@@ -11,11 +11,13 @@ gem 'sequel'
 gem 'dry-view'
 gem 'dry-validation'
 gem 'dry-transaction'
+gem 'dry-struct'
 gem 'slim'
 gem 'puma'
 gem 'racksh'
 gem 'thor'
 gem 'pg'
+gem 'nokogiri'
 
 group :development, :test do
   gem 'rspec'
