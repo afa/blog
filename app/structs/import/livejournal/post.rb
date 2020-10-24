@@ -15,7 +15,7 @@ module Import
       attribute :timestamp, Types::Coercible::Integer
       attribute :ditemid, Types::Coercible::Integer
       attribute :anum, Types::Coercible::Integer
-      # attribute :props, Types::Hash.optional
+      attribute :props, Types::Hash
       attribute :eventtime, Types::String
       attribute :logtime, Types::String
     end

@@ -8,22 +8,38 @@ class BlogpostsImport < Thor
 
   desc 'parse_posts PATH', 'parse li_import\'ed files'
   def parse_posts(path)
-    ["eventtime", "ditemid", "event_timestamp", "reply_count", "logtime", "props", "can_comment", "anum", "subject"]
-    maps = %w[reply_count itemid ditemid anum eventtime logtime].map { |key| [key, key] }.to_h.merge(
-      'body' => 'event', 'title' => 'subject', 'origin_url' => 'url', 'commentable' => 'can_comment',
-      'timestamp' => 'event_timestamp'
-    )
+    maps = %w[reply_count itemid ditemid anum eventtime security allowmask logtime]
+           .map { |key| [key, key] }
+           .to_h
+           .merge(
+             'body' => 'event', 'title' => 'subject', 'origin_url' => 'url', 'commentable' => 'can_comment',
+             'timestamp' => 'event_timestamp'
+           )
+    mprops = %w[
+      repost_author repost_subject repost_url repost current_moodid personifi_lang opt_preformatted give_features
+      opt_nocomments personifi_tags taglist current_mood current_music current_location copyright
+      adult_content
+    ]
+             .map { |key| [key, key] }
+             .to_h
+             .merge({})
     # xslt = Nokogiri::XSLT(File.read(File.join(%w[. config xslt lj_import_post.xslt])))
     Dir[File.join(path, 'L-*')].each do |name|
       xml = Nokogiri::XML(File.read(name))
 
       data = Import::Livejournal::Post.new(
-        maps.each_with_object({}) { |(k, v), obj| obj[k.to_sym] = xml.xpath("/event/#{v}").text }
+        maps
+        .each_with_object({}) { |(k, v), obj| obj[k.to_sym] = xml.xpath("/event/#{v}").text }
+        .merge(
+          props: mprops.each_with_object({}) { |(k, v), obj| obj[k.to_sym] = xml.xpath("/event/props/#{v}").text }
+        )
       )
-      p data
-      p xml.xpath('/event/props')
-      p xml.xpath('/event').children.map(&:name).reject { |n| (maps.values + ['text']).include?(n) }
-      break
+      # p data
+      plst = xml.xpath('/event/props').children.map(&:name).reject { |n| (mprops.values + %w[text]).include?(n) }
+      lst = xml.xpath('/event').children.map(&:name).reject { |n| (maps.values + %w[text props]).include?(n) }
+      p data.itemid, lst unless lst.empty?
+      p data.itemid, plst unless plst.empty?
+      # break
       # prepared = xslt.transform(xml)
       # p prepared, prepared.each { |x| p x }
     end
