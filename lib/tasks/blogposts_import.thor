@@ -24,7 +24,7 @@ class BlogpostsImport < Thor
              .to_h
              .merge({})
     # xslt = Nokogiri::XSLT(File.read(File.join(%w[. config xslt lj_import_post.xslt])))
-    Dir[File.join(path, 'L-*')].each do |name|
+    importable = Dir[File.join(path, 'L-*')].each_with_object([]) do |name, list|
       xml = Nokogiri::XML(File.read(name))
 
       data = Import::Livejournal::Post.new(
@@ -39,10 +39,12 @@ class BlogpostsImport < Thor
       lst = xml.xpath('/event').children.map(&:name).reject { |n| (maps.values + %w[text props]).include?(n) }
       p data.itemid, lst unless lst.empty?
       p data.itemid, plst unless plst.empty?
+      list << data
       # break
       # prepared = xslt.transform(xml)
       # p prepared, prepared.each { |x| p x }
-    end
+    end.sort_by(&:itemid)
+    p importable.map(&:itemid)
   end
 
   desc 'parse_lj FILE', 'parse prepared xml import file'
