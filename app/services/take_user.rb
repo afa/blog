@@ -7,8 +7,10 @@ class TakeUser
 
   def take(hash:)
     acc = Account.where(token: hash).first
+    pp acc
     return Failure(:unlogged) unless acc
 
+    pp :ok
     Success(acc)
   end
 end

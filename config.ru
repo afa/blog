@@ -3,10 +3,6 @@ Bundler.require(:default)
 
 require './boot'
 
-map '/' do
-  run App
-end
-
 map '/l' do
   run LinkManager
 end
@@ -17,4 +13,8 @@ end
 
 map '/b' do
   run BlogManager
+end
+
+map '/' do
+  run AppManager
 end

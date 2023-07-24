@@ -6,7 +6,8 @@ module Link
     LETTERS = %w[2 3 4 5 6 7 8 9] + FIRST_LETTER
 
     check :valid
-    step :create
+    step :record
+    step :link
 
     private
 
@@ -24,7 +25,7 @@ module Link
       true
     end
 
-    def create(account:, params:)
+    def record(account:, params:)
       url = params['url'].strip
       lnk = FastLink.where(url: url).first
       return Success(lnk) if lnk
@@ -35,7 +36,12 @@ module Link
       lnk = FastLink.create(url: url, author_id: user.id, url_key: url_id)
       return Failure(:cant_create) unless lnk
 
-      Success(lnk)
+      Success(instance: lnk, params: params)
+    end
+
+    def link(instance:, params:)
+      Success(instance)
+
     end
 
     def mk_url

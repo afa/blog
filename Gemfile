@@ -17,6 +17,7 @@ gem 'puma'
 gem 'racksh'
 gem 'thor'
 gem 'pg'
+gem 'mysql2'
 gem 'nokogiri'
 
 group :development, :test do

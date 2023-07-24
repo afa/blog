@@ -1,4 +1,23 @@
+h1 Short links
+
 form action='/l/' method='POST'
   label for='url' Url
   input#url type='text' name='url'
   input type='submit' value='Save'
+
+table
+  head
+    tr
+      th id
+      th state
+      th name
+      th url
+      th actions
+  tbody
+    - links.each do |l|
+      tr
+        td = l.id
+        td = l.state
+        td = l.name
+        td = l.url
+        td 

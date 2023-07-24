@@ -2,3 +2,5 @@
 .ruby-version
 .bundle/
 data/
+/log/*
+!/log/.keep

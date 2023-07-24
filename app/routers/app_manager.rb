@@ -1,10 +1,5 @@
-class App < Sinatra::Base
+class AppManager < Sinatra::Base
   helpers Sinatra::Cookies
-  get '/' do
-    account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
-    DashboardView.new.call(account: account, params: params).to_s
-  end
-
   get '/login' do
     LoginView.new.call(account: nil).to_s
   end
@@ -24,5 +19,12 @@ class App < Sinatra::Base
   post '/logout' do
     cookies[:user] = nil
     redirect '/'
+  end
+
+  get '/' do
+    TakeUser.new.call(hash: cookies[:user]) do |m|
+      m.success { |acc| DashboardView.new.call(account: acc, params: params).to_s }
+      m.failure { redirect '/login' }
+    end
   end
 end
