@@ -22,4 +22,7 @@ gem 'nokogiri'
 
 group :development, :test do
   gem 'rspec'
+  gem 'rubocop'
+  gem 'rubocop-sequel'
+  gem 'rubocop-rspec'
 end
