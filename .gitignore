@@ -1,1 +1,5 @@
 *.swp
+.bundle/
+data/
+/log/*
+!/log/.keep

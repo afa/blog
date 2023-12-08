@@ -1,0 +1,7 @@
+.account
+  - if current_account
+    form action='/logout' method='post'
+      input type='hidden' name='_method' value='DELETE'
+      input type='submit' value='logout'
+  - else
+    a href='/login' login      

@@ -1,0 +1,4 @@
+---
+db: postgres:///blog_devel
+ext_db:
+  moz: mysql2:///moz
