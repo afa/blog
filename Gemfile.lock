@@ -3,6 +3,11 @@ GEM
   specs:
     ast (2.4.2)
     bcrypt (3.1.17)
+    bundle-audit (0.1.0)
+      bundler-audit
+    bundler-audit (0.9.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     concurrent-ruby (1.1.10)
     diff-lcs (1.5.0)
     dry-configurable (0.14.0)
@@ -158,6 +163,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
+  bundle-audit
   dry-struct
   dry-transaction
   dry-validation
