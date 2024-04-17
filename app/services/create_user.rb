@@ -13,7 +13,7 @@ class CreateUser
   end
 
   def model(first_name:, last_name: nil)
-    u = User.create(first_name: first_name, last_name: last_name)
+    u = User.create(first_name:, last_name:)
     return Failure(u.errors) unless u.exists?
 
     Success(u)

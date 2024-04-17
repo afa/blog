@@ -1,6 +1,7 @@
 module Forum
   class Attachment < Sequel::Model(App.ext_db&.fetch(:moz)[:forum_attachment])
     many_to_one :user, key: :userid, class: Forum::User
+    many_to_one :post, key: :postid, class: Forum::Post
   end
 end
 

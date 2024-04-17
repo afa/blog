@@ -1,11 +1,9 @@
-class LocateUser
-  include Dry::Transaction
-
-  step :locate
+class LocateUser < BaseInteractor
+  param :params
 
   private
 
-  def locate(params)
+  def locate
     uname = params['user']
     acc = Account.where(login: uname).first
     return Failure(:not_found) unless acc

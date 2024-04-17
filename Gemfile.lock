@@ -3,6 +3,12 @@ GEM
   specs:
     ast (2.4.2)
     bcrypt (3.1.17)
+    bigdecimal (3.1.7)
+    bundle-audit (0.1.0)
+      bundler-audit
+    bundler-audit (0.9.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     concurrent-ruby (1.1.10)
     diff-lcs (1.5.0)
     dry-configurable (0.14.0)
@@ -62,28 +68,31 @@ GEM
       tilt (~> 2.0, >= 2.0.6)
     ice_nine (0.11.2)
     json (2.7.1)
+    kwalify (0.7.2)
     language_server-protocol (3.17.0.3)
     multi_json (1.15.0)
-    mustermann (1.1.1)
+    mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
     mysql2 (0.5.5)
-    nio4r (2.5.8)
-    nokogiri (1.13.3-arm64-darwin)
+    nio4r (2.7.0)
+    nokogiri (1.16.2-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.3-x86_64-darwin)
+    nokogiri (1.16.2-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.3-x86_64-linux)
+    nokogiri (1.16.2-x86_64-linux)
       racc (~> 1.4)
+    oj (3.16.3)
+      bigdecimal (>= 3.0)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
     pg (1.3.5)
-    puma (5.6.4)
+    puma (5.6.8)
       nio4r (~> 2.0)
     racc (1.6.0)
-    rack (2.2.3)
-    rack-protection (2.2.0)
+    rack (2.2.8)
+    rack-protection (2.2.4)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -91,6 +100,10 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5)
     rainbow (3.1.1)
+    reek (6.1.4)
+      kwalify (~> 0.7.0)
+      parser (~> 3.2.0)
+      rainbow (>= 2.0, < 4.0)
     regexp_parser (2.8.3)
     rexml (3.2.6)
     rspec (3.11.0)
@@ -123,6 +136,9 @@ GEM
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
       rubocop (~> 1.33)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     rubocop-rspec (2.25.0)
       rubocop (~> 1.40)
       rubocop-capybara (~> 2.17)
@@ -132,23 +148,23 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     sequel (5.55.0)
-    sinatra (2.2.0)
-      mustermann (~> 1.0)
+    sinatra (2.2.4)
+      mustermann (~> 2.0)
       rack (~> 2.2)
-      rack-protection (= 2.2.0)
+      rack-protection (= 2.2.4)
       tilt (~> 2.0)
-    sinatra-contrib (2.2.0)
+    sinatra-contrib (2.2.4)
       multi_json
-      mustermann (~> 1.0)
-      rack-protection (= 2.2.0)
-      sinatra (= 2.2.0)
+      mustermann (~> 2.0)
+      rack-protection (= 2.2.4)
+      sinatra (= 2.2.4)
       tilt (~> 2.0)
     slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
     temple (0.8.2)
     thor (1.2.1)
-    tilt (2.0.10)
+    tilt (2.0.11)
     unicode-display_width (2.5.0)
 
 PLATFORMS
@@ -158,21 +174,30 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
+  bundle-audit
+  dry-initializer
+  dry-monads
   dry-struct
   dry-transaction
+  dry-types
   dry-validation
   dry-view
+  multi_json
   mysql2
-  nokogiri
+  nokogiri (~> 1.16)
+  oj
   pg
-  puma
+  puma (~> 5.6.7)
+  rack (~> 2.0)
   racksh
+  reek
   rspec
   rubocop
+  rubocop-performance
   rubocop-rspec
   rubocop-sequel
   sequel
-  sinatra
+  sinatra (~> 2.2.3)
   sinatra-contrib
   slim
   thor

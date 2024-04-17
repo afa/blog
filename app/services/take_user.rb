@@ -1,16 +1,12 @@
 class TakeUser
-  include Dry::Transaction
-
-  step :take
+  option :hash
 
   private
 
-  def take(hash:)
+  def take
     acc = Account.where(token: hash).first
-    pp acc
     return Failure(:unlogged) unless acc
 
-    pp :ok
     Success(acc)
   end
 end

@@ -1,45 +1,55 @@
-class CreateAccount
-  include Dry::Transaction
+class CreateAccount < BaseInteractor
+  option :user
+  option :login
+  option :pass
 
-  check :validate
-  step :model
-  step :token
-  step :password
-  step :store
+  def call
+    yield validate
+    account = yield model
+    yield token(account)
+    yield password(account)
+    yield store(account)
+  end
+
+  # check :validate
+  # step :model
+  # step :token
+  # step :password
+  # step :store
 
   private
 
-  def validate(user:, login:, pass:)
-    return false unless user
+  def validate
+    return Failure() unless user
 
-    return false if pass.to_s.empty?
+    return Failure() if pass.to_s.empty?
 
-    true
+    Success()
   end
 
-  def model(user:, login:, pass:)
-    m = Account.new(user_id: user.id, login: login)
-    Success(account: m, pass: pass)
+  def model
+    account = Account.new(user_id: user.id, login:)
+    Success(account)
   end
 
-  def token(account:, pass:)
+  def token(account)
     16.times do
       t = SecureRandom.hex
       unless Account[token: t]
         account.token = t
-        return Success(account: account, pass: pass)
+        return Success()
       end
     end
     Failure(:no_unique_token_generated)
   end
 
-  def password(account:, pass:)
+  def password(account)
     account.encrypted_password = BCrypt::Password.create(pass)
-    Success(account: account)
+    Success()
   end
 
-  def store(account:)
-    account.save
+  def store(account)
+    account.save_changes
     return Failure(errors: account.errors) if account.modified? || !account.exists?
 
     Success(account)
