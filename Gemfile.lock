@@ -3,6 +3,7 @@ GEM
   specs:
     ast (2.4.2)
     bcrypt (3.1.17)
+    bigdecimal (3.1.7)
     bundle-audit (0.1.0)
       bundler-audit
     bundler-audit (0.9.1)
@@ -67,6 +68,7 @@ GEM
       tilt (~> 2.0, >= 2.0.6)
     ice_nine (0.11.2)
     json (2.7.1)
+    kwalify (0.7.2)
     language_server-protocol (3.17.0.3)
     multi_json (1.15.0)
     mustermann (2.0.2)
@@ -79,6 +81,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.2-x86_64-linux)
       racc (~> 1.4)
+    oj (3.16.3)
+      bigdecimal (>= 3.0)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -96,6 +100,10 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5)
     rainbow (3.1.1)
+    reek (6.1.4)
+      kwalify (~> 0.7.0)
+      parser (~> 3.2.0)
+      rainbow (>= 2.0, < 4.0)
     regexp_parser (2.8.3)
     rexml (3.2.6)
     rspec (3.11.0)
@@ -128,6 +136,9 @@ GEM
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
       rubocop (~> 1.33)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     rubocop-rspec (2.25.0)
       rubocop (~> 1.40)
       rubocop-capybara (~> 2.17)
@@ -164,18 +175,25 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   bundle-audit
+  dry-initializer
+  dry-monads
   dry-struct
   dry-transaction
+  dry-types
   dry-validation
   dry-view
+  multi_json
   mysql2
   nokogiri (~> 1.16)
+  oj
   pg
   puma (~> 5.6.7)
   rack (~> 2.0)
   racksh
+  reek
   rspec
   rubocop
+  rubocop-performance
   rubocop-rspec
   rubocop-sequel
   sequel

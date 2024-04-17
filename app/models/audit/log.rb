@@ -30,7 +30,7 @@ class Audit::Log < Sequel::Model(:audit_log)
   end
 
   def self.log(kind, event, **data)
-    create(kind: kind, event: event, data: data, ts: Time.now.to_i)
+    create(kind:, event:, data:, ts: Time.now.to_i)
   end
 
   def format(which = nil)

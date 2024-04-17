@@ -1,47 +1,40 @@
 module Link
-  class Create
-    include Dry::Transaction
+  class Create < BaseInteractor
+    option :account
+    option :params
+    option :contract, default: ->() { Link::CreateContract.new }
 
     FIRST_LETTER = %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z a b c d e f g h j k m n o p q r s t u v w x y z]
     LETTERS = %w[2 3 4 5 6 7 8 9] + FIRST_LETTER
 
-    check :valid
-    step :record
-    step :link
+    def call
+      return Failure(:unauthorized) unless account&.pk
+
+      hash = yield process_params
+      record(hash)
+    end
 
     private
 
-    def valid(account:, params:)
-      return false unless account
+    def process_params
+      contract.call(params).to_monad
+      # return false unless params['url']
 
-      return false unless account.id
-
-      return false unless account.id.positive?
-
-      return false unless params['url']
-
-      return false if params['url'].strip.empty?
-
-      true
+      # return false if params['url'].strip.empty?
     end
 
-    def record(account:, params:)
-      url = params['url'].strip
-      lnk = FastLink.where(url: url).first
+    def record(hash)
+      url = hash[:url]
+      lnk = FastLink.where(url:).first
       return Success(lnk) if lnk
 
       user = account.user
       url_id = mk_url
 
-      lnk = FastLink.create(url: url, author_id: user.id, url_key: url_id)
+      lnk = FastLink.create(url:, author_id: user.id, url_key: url_id)
       return Failure(:cant_create) unless lnk
 
-      Success(instance: lnk, params: params)
-    end
-
-    def link(instance:, params:)
-      Success(instance)
-
+      Success(lnk)
     end
 
     def mk_url

@@ -2,7 +2,7 @@ class BlogManager < Sinatra::Base
   helpers Sinatra::Cookies
   get '/' do
     account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
-    Blog::IndexView.new.call(account: account, params: params).to_s
+    Blog::IndexView.new.call(account:, params:).to_s
   end
 
   get '/:url_id' do
@@ -18,9 +18,9 @@ class BlogManager < Sinatra::Base
 
   post '/' do
     account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
-    Link::Create.new.call(account: account, params: params) do |m|
+    Link::Create.new.call(account:, params:) do |m|
       m.success do |val|
-        Link::CreateView.new.call(account: account, link: val).to_s
+        Link::CreateView.new.call(account:, link: val).to_s
       end
       m.failure do
         redirect '/'
