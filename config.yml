@@ -2,3 +2,6 @@
 db: postgres:///blog_devel
 ext_db:
   moz: mysql2:///moz
+sync:
+  blog:
+    api_url: https://livejournal.com
