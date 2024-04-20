@@ -2,3 +2,8 @@
 db: postgres:///blog_devel
 ext_db:
   moz: mysql2:///moz
+sync:
+  blog:
+    api_url: http://www.livejournal.com/interface/flat
+    user_pass_hash: "98047574f5db95f7aad1a6840f7ed0bb"
+    user_key: afa_at_work
