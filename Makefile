@@ -16,7 +16,7 @@ rspec: Gemfile.lock
 # 	find data/temp -size 0 |wc -l
 migrate:
 	bundle exec sequel -m db/migrate postgres:///blog_devel
-db:
+databse:
 	bundle exec sequel postgres:///blog_devel
 server: Gemfile.lock
 	bundle exec rackup
