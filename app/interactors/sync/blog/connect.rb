@@ -3,6 +3,14 @@ require 'digest'
 module Sync
   module Blog
     class Connect < BaseInteractor
+      POST_PROCESS_RULES = {
+        'access' => /^access_([1234567890]+)$/,
+        'frgrp' => {
+          /^frgrp_([1234567890]+)_sortorder$/ => 'sortorder',
+          /^frgrp_([1234567890]+)_name$/ => 'name'
+        }
+      }.freeze
+
       option :config, default: -> { App.config.dig('sync', 'blog') }
       option :request_handler, default: -> { Sync::Blog::Request }
 
@@ -28,24 +36,9 @@ module Sync
         }
         request_handler
           .call(payload)
-          .bind { |rz| extract_array(rz, /^access_([1234567890]+)$/, 'access') { |s| s.to_i } }
+          .bind { |rz| Sync::Blog::PostConvert.call(data: rz, rules: POST_PROCESS_RULES) }
       end
 
-      def extract_array(hash, rexp, name, &cvt)
-        Try {
-          rez = hash.each_with_object({ tail: {}, array: {} }) do |(k, v), obj|
-            m = rexp.match(k)
-            if m
-              key = cvt.call(m[1])
-              obj[:array][key] = v
-            else
-              obj[:tail][k] = v
-            end
-          end
-          rez[:tail].merge(name => rez[:array].keys.sort.map { |k| rez[:array][k] })
-        }
-          .to_result
-      end
     end
   end
 end
