@@ -11,29 +11,20 @@ module Sync
         }
       }.freeze
 
-      option :config, default: -> { App.config.dig('sync', 'blog') }
       option :request_handler, default: -> { Sync::Blog::Request }
 
       def call
-        challenge = yield request_challenge
-        login(challenge)
-
+        login
       end
+
+      private
       
-      def request_challenge
-        request_handler.call({ 'mode' => 'getchallenge' })
-      end
-
-      def login(challenge)
-        user = config['user_key']
-        hash = config['user_pass_hash']
+      def login
+        challenge = yield Sync::Blog::PrepareChallenge.call
         payload = {
           'mode' => 'login',
-          'user' => user,
-          'auth_method' => 'challenge',
-          'auth_challenge' => challenge['challenge'],
-          'auth_response' => Digest::MD5.hexdigest(challenge['challenge'] + hash)
         }
+          .merge(challenge)
         request_handler
           .call(payload)
           .bind { |rz| Sync::Blog::PostConvert.call(data: rz, rules: POST_PROCESS_RULES) }

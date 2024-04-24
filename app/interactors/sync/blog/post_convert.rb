@@ -3,6 +3,7 @@ module Sync
     class PostConvert < BaseInteractor
       option :rules
       option :data
+      option :sort_key_convertor, default: -> { ->(item) { item.to_i } }
 
       # struct for array of sntuct:
       # array_name => { rexp => attr_name }
@@ -11,36 +12,44 @@ module Sync
       #
       # reverse index: rexp => array_name
       def call
-        separated = data
-          .keys
-          .each_with_object({}) { |key, obj|
-            obj[key] = match?(key)
-          }
-          .each_with_object({tail: {}, arrays: {}}) {|(k, v), obj|
-            if v
-              # apply rule, format name - index - name - val or name - index - val
-              # original key => rexp
-              extract_matched(k, v).each { |aname, indexed|
-                obj[:arrays][aname] ||= {}
-                indexed.each { |aidx, astruct|
-                  if astruct.is_a?(Hash)
-                    obj[:arrays][aname][aidx] ||= {}
-                    astruct.keys.each { |skey|
-                      obj[:arrays][aname][aidx][skey] = astruct[skey]
-                    }
-                  else
-                    obj[:arrays][aname][aidx] = astruct
-                  end
+        Try {
+          separated = data
+            .keys
+            .each_with_object({}) { |key, obj|
+              obj[key] = match?(key)
+            }
+            .each_with_object({tail: {}, arrays: {}}) {|(k, v), obj|
+              if v
+                # apply rule, format name - index - name - val or name - index - val
+                # original key => rexp
+                extract_matched(k, v).each { |aname, indexed|
+                  obj[:arrays][aname] ||= {}
+                  indexed.each { |aidx, astruct|
+                    if astruct.is_a?(Hash)
+                      obj[:arrays][aname][aidx] ||= {}
+                      astruct.keys.each { |skey|
+                        obj[:arrays][aname][aidx][skey] = astruct[skey]
+                      }
+                    else
+                      obj[:arrays][aname][aidx] = astruct
+                    end
+                  }
                 }
+              else
+                obj[:tail][k] = data[k]
+              end
+            }
+            .tap { |obj|
+              obj[:converted] = obj[:arrays].each_with_object({}) { |(name, hsh), rzlt|
+                rzlt[name] = hsh.to_a.sort_by { |arr| sort_key_convertor.call(arr.first) }.map(&:last)
               }
-            else
-              obj[:tail][k] = data[k]
-            end
-          }
-
+            }
+            .then { |obj| obj[:tail].merge(obj[:converted]) }
+        }
+          .to_result
       end
 
-      # private
+      private
 
       def match?(str)
         rindex.keys.find { |k| k =~ str }
@@ -56,22 +65,6 @@ module Sync
             }
           }
         end
-      end
-
-      def extract_array(hash, rexp, name, &cvt)
-        Try {
-          rez = hash.each_with_object({ tail: {}, array: {} }) do |(k, v), obj|
-            m = rexp.match(k)
-            if m
-              key = cvt.call(m[1])
-              obj[:array][key] = v
-            else
-              obj[:tail][k] = v
-            end
-          end
-          rez[:tail].merge(name => rez[:array].keys.sort.map { |k| rez[:array][k] })
-        }
-          .to_result
       end
 
       def rindex
