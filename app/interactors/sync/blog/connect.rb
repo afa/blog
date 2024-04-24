@@ -18,18 +18,14 @@ module Sync
       end
 
       private
-      
+
       def login
         challenge = yield Sync::Blog::PrepareChallenge.call
-        payload = {
-          'mode' => 'login',
-        }
-          .merge(challenge)
+        payload = { 'mode' => 'login' }.merge(challenge)
         request_handler
           .call(payload)
           .bind { |rz| Sync::Blog::PostConvert.call(data: rz, rules: POST_PROCESS_RULES) }
       end
-
     end
   end
 end
