@@ -10,7 +10,6 @@ module Sync
         Try {
           url = URI(config.dig('sync', 'blog', 'api_url'))
           payload = yield prepare_data
-          pp payload
           handler.post(url, payload, 'Content-Type' => 'application/x-www-form-urlencoded')
         }
           .bind { |response|

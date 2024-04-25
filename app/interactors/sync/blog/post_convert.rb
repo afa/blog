@@ -22,19 +22,8 @@ module Sync
               if v
                 # apply rule, format name - index - name - val or name - index - val
                 # original key => rexp
-                extract_matched(k, v).each { |aname, indexed|
-                  obj[:arrays][aname] ||= {}
-                  indexed.each { |aidx, astruct|
-                    if astruct.is_a?(Hash)
-                      obj[:arrays][aname][aidx] ||= {}
-                      astruct.each_key { |skey|
-                        obj[:arrays][aname][aidx][skey] = astruct[skey]
-                      }
-                    else
-                      obj[:arrays][aname][aidx] = astruct
-                    end
-                  }
-                }
+                matches = extract_matched(k, v)
+                build_arrays(matches, obj[:arrays])
               else
                 obj[:tail][k] = data[k]
               end
@@ -62,8 +51,24 @@ module Sync
         }
       end
 
+      def build_arrays(matches, place)
+        matches.each { |aname, indexed|
+          place[aname] ||= {}
+          indexed.each { |aidx, astruct|
+            if astruct.is_a?(Hash)
+              place[aname][aidx] ||= {}
+              astruct.each_key { |skey|
+                place[aname][aidx][skey] = astruct[skey]
+              }
+            else
+              place[aname][aidx] = astruct
+            end
+          }
+        }
+      end
+
       def hashes_to_arrays(obj)
-        obj[:arrays].transform_values { |hsh|
+        obj.transform_values { |hsh|
           hsh.to_a.sort_by { |arr| sort_key_convertor.call(arr.first) }.map(&:last)
         }
       end
