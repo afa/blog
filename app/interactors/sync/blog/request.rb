@@ -10,7 +10,6 @@ module Sync
         Try {
           url = URI(config.dig('sync', 'blog', 'api_url'))
           payload = yield prepare_data
-          pp payload
           handler.post(url, payload, 'Content-Type' => 'application/x-www-form-urlencoded')
         }
           .bind { |response|
@@ -34,7 +33,7 @@ module Sync
 
       def parse_response(response)
         Try {
-          response.split("\n").each_slice(2).each_with_object({}) { |(key, val), obj| obj[key] = val }
+          response.split("\n").each_slice(2).with_object({}) { |(key, val), obj| obj[key] = val }
         }
           .to_result
       end
