@@ -11,6 +11,7 @@ module Sync
         }
       }.freeze
 
+      option :source
       option :request_handler, default: -> { Sync::Blog::Request }
 
       def call
@@ -20,10 +21,10 @@ module Sync
       private
 
       def login
-        challenge = yield Sync::Blog::PrepareChallenge.call
+        challenge = yield Sync::Blog::PrepareChallenge.call(source:)
         payload = { 'mode' => 'login' }.merge(challenge)
         request_handler
-          .call(payload)
+          .call(payload, source:)
           .bind { |rz| Sync::Blog::PostConvert.call(data: rz, rules: POST_PROCESS_RULES) }
       end
     end

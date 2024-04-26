@@ -16,6 +16,7 @@ end
 begin
   db_url = App.config['db'] || ENV['DATABASE_URL'] || 'postgres://localhost/app'
   App.db = Sequel.connect(db_url)
+  App.db.extension :pg_json
 rescue Exception => e
   App.logger.error("db not connected with #{e.message}")
   raise
