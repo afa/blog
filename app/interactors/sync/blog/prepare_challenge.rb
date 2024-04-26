@@ -21,7 +21,7 @@ module Sync
       end
 
       def request_challenge
-        request_handler.call({ 'mode' => 'getchallenge' }, source:).tap{|x|pp x}
+        request_handler.call({ 'mode' => 'getchallenge' }, source:)
       end
     end
   end
