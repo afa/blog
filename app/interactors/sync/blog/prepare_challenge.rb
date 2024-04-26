@@ -1,14 +1,15 @@
 module Sync
   module Blog
     class PrepareChallenge < BaseInteractor
+      option :source
       option :config, default: -> { App.config.dig('sync', 'blog') }
       option :request_handler, default: -> { Sync::Blog::Request }
 
       def call
         Try {
           challenge = yield request_challenge
-          user = config['user_key']
-          hash = config['user_pass_hash']
+          user = source.login_options['user_key']
+          hash = source.login_options['user_pass_hash']
           {
             'user' => user,
             'auth_method' => 'challenge',
@@ -20,7 +21,7 @@ module Sync
       end
 
       def request_challenge
-        request_handler.call({ 'mode' => 'getchallenge' })
+        request_handler.call({ 'mode' => 'getchallenge' }, source:).tap{|x|pp x}
       end
     end
   end

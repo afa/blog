@@ -4,11 +4,11 @@ module Sync
     class Request < BaseInteractor
       param :data
       option :handler, default: -> { Net::HTTP }
-      option :config, default: -> { App.config }
+      option :source
 
       def call
         Try {
-          url = URI(config.dig('sync', 'blog', 'api_url'))
+          url = URI(source.api_url)
           payload = yield prepare_data
           handler.post(url, payload, 'Content-Type' => 'application/x-www-form-urlencoded')
         }

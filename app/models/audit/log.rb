@@ -36,7 +36,9 @@ class Audit::Log < Sequel::Model(:audit_log)
   def format(which = nil)
     matter = Audit::Formatter
     matter = KINDS.dig(kind.to_sym, event.to_sym) || matter if KINDS[kind.to_sym].is_a?(Hash)
-    matter = KINDS.dig(kind.to_sym, event.to_sym, which.to_sym) || matter if which &&KINDS.dig(kind.to_sym, event.to_sym).is_a?(Hash)
+    if which && KINDS.dig(kind.to_sym, event.to_sym).is_a?(Hash)
+      matter = KINDS.dig(kind.to_sym, event.to_sym, which.to_sym) || matter
+    end
     matter = matter[:formatter] if matter.is_a?(Hash) && matter[:formatter]
     matter.call(self)
   end
