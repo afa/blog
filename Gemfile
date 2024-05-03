@@ -13,7 +13,7 @@ gem 'oj'
 gem 'sequel'
 gem 'dry-view'
 gem 'dry-validation'
-gem 'dry-transaction'
+# gem 'dry-transaction'
 gem 'dry-struct'
 gem 'dry-types'
 gem 'dry-monads'
@@ -28,10 +28,14 @@ gem 'mysql2'
 gem 'nokogiri', '~>1.16'
 
 group :development, :test do
-  gem 'rspec'
   gem 'rubocop'
   gem 'rubocop-sequel'
   gem 'rubocop-rspec'
   gem 'rubocop-performance'
   gem 'reek'
+end
+
+group :test do
+  gem 'rspec'
+  gem 'fakeweb'
 end

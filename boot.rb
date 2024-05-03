@@ -1,4 +1,5 @@
 require 'sinatra/cookies'
+require 'yaml'
 require 'logger'
 require 'sequel'
 require_relative './app'
@@ -14,7 +15,7 @@ rescue Exception => e
 end
 
 begin
-  db_url = App.config['db'] || ENV['DATABASE_URL'] || 'postgres://localhost/app'
+  db_url = ENV['DATABASE_URL'] || App.config['db'] || 'postgres://localhost/app'
   App.db = Sequel.connect(db_url)
   App.db.extension :pg_json
 rescue Exception => e
