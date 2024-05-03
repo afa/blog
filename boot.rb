@@ -2,7 +2,7 @@ require 'sinatra/cookies'
 require 'yaml'
 require 'logger'
 require 'sequel'
-require_relative './app'
+require_relative 'app'
 App.logger = Logger.new('log/processing.log', 'monthly')
 App.logger.level = Logger::INFO
 App.logger.info('App start')
