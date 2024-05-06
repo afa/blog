@@ -1,16 +1,4 @@
 connect(for request spec)
-"mode=getchallenge"
-#<Net::HTTPOK 200 OK readbody=true>
-"auth_scheme\n" +
-"c0\n" +
-"challenge\n" +
-"c0:1714208400:2269:60:yh8Vk9qOWzmm4VxAreoH:7c7dc2ee098a27fbb78b119235082ed9\n" +
-"expire_time\n" +
-"1714210729\n" +
-"server_time\n" +
-"1714210669\n" +
-"success\n" +
-"OK\n"
 "mode=login&user=afa_at_work&auth_method=challenge&auth_challenge=c0%3A1714208400%3A2269%3A60%3Ayh8Vk9qOWzmm4VxAreoH%3A7c7dc2ee098a27fbb78b119235082ed9&auth_response=000a73154c20122c1992b89122ac6814"
 #<Net::HTTPOK 200 OK readbody=true>
 "access_1\n" +

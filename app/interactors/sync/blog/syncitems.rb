@@ -14,7 +14,7 @@ module Sync
       option :request_handler, default: -> { Sync::Blog::Request }
 
       def call
-        challenge = yield Sync::Blog::PrepareChallenge.call(source:)
+        challenge = yield Sync::Blog::PrepareChallenge.call(source:, request_handler:)
         payload = { 'mode' => 'syncitems', 'ver' => '1' }
                   .tap { |pl| pl.merge!('lastsync' => last_sync.strftime('%Y-%m-%d %H:%M:%S')) if last_sync }
                   .merge(challenge)
