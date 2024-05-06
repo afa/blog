@@ -1,13 +1,13 @@
 require 'spec_helper'
 require 'dry/monads'
 include Dry::Monads[:result]
-
-RSpec.describe Sync::Blog::Connect do
+RSpec.describe Sync::Blog::Syncitems do
   let(:interactor_call) { described_class.call(source:, request_handler:) }
-  let(:request_handler) { class_double(Sync::Blog::Request) }
 
   context 'when valid' do
     include_context('with auth challenge')
+    let(:login_opts) { { 'user_key' => 'a', 'user_pass_hash' => 'b' } }
+    let(:request_handler) { class_double(Sync::Blog::Request) }
 
     before do
       allow(request_handler).to(
