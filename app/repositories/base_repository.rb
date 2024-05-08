@@ -1,28 +1,28 @@
-# frozen_string_literal: true
+class BaseRepository
+  extend Dry::Initializer
+  extend Forwardable
 
-require 'hunt_flow'
-
-module Huntflow
-  class BaseRepository
-    # rubocop:disable Lint/MissingSuper
-    def self.inherited(klass)
+  # ru bocop:disable Lint/MissingSuper
+  class << self
+    def inherited(klass)
       klass.include Dry::Monads[:do, :maybe, :result, :try]
+      super
     end
-    # rubocop:enable Lint/MissingSuper
-
-    private
-
-    def connect_to_huntflow
-      ::Huntflow::ConnectToHuntflow.call
-    end
-
-    def result_of(response)
-      # response isn't a monad, so we should wrap it
-      return Success(response) if response.success?
-
-      Failure(HuntflowResponseFailure.new(response.message))
-    end
-
-    class HuntflowResponseFailure < StandardError; end
   end
+  # ru bocop:enable Lint/MissingSuper
+
+  # private
+
+  # def connect_to_huntflow
+  #   ::Huntflow::ConnectToHuntflow.call
+  # end
+
+  # def result_of(response)
+  #   # response isn't a monad, so we should wrap it
+  #   return Success(response) if response.success?
+
+  #   Failure(HuntflowResponseFailure.new(response.message))
+  # end
+
+  class Error < StandardError; end
 end
