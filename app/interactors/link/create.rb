@@ -45,7 +45,7 @@ module Link
       last_id /= FIRST_LETTER.size
       ids = []
       until last_id.zero?
-        ids << last_id % LETTERS.size
+        ids << (last_id % LETTERS.size)
         last_id /= LETTERS.size
       end
       FIRST_LETTER[frst] + ids.map { |i| LETTERS[i] }.join

@@ -24,6 +24,8 @@ module Sync
           }
       end
 
+      private
+
       def prepare_data
         Try {
           URI.encode_www_form(data)

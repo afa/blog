@@ -2,7 +2,6 @@ module Sync
   module Blog
     class PrepareChallenge < BaseInteractor
       option :source
-      option :config, default: -> { App.config.dig('sync', 'blog') }
       option :request_handler, default: -> { Sync::Blog::Request }
 
       def call

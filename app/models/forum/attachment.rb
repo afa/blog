@@ -6,4 +6,5 @@ module Forum
 end
 
 
-# attachmentid | userid | dateline | thumbnail_dateline | filename | filedata | visible | counter | filesize | postid | filehash | posthash | thumbnail | thumbnail_filesize | extension
+# attachmentid | userid | dateline | thumbnail_dateline | filename | filedata | visible | counter | filesize
+# | postid | filehash | posthash | thumbnail | thumbnail_filesize | extension

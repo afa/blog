@@ -9,8 +9,7 @@ class BlogpostsImport < Thor
   desc 'parse_posts PATH', 'parse li_import\'ed files'
   def parse_posts(path)
     maps = %w[reply_count itemid ditemid anum eventtime security allowmask logtime]
-           .map { |key| [key, key] }
-           .to_h
+           .to_h { |key| [key, key] }
            .merge(
              'body' => 'event', 'title' => 'subject', 'origin_url' => 'url', 'commentable' => 'can_comment',
              'timestamp' => 'event_timestamp'
@@ -20,8 +19,7 @@ class BlogpostsImport < Thor
       opt_nocomments personifi_tags taglist current_mood current_music current_location copyright
       adult_content
     ]
-             .map { |key| [key, key] }
-             .to_h
+             .to_h { |key| [key, key] }
              .merge({})
     # xslt = Nokogiri::XSLT(File.read(File.join(%w[. config xslt lj_import_post.xslt])))
     importable = Dir[File.join(path, 'L-*')].each_with_object([]) do |name, list|

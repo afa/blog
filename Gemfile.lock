@@ -19,16 +19,11 @@ GEM
       dry-configurable (~> 0.13, >= 0.13.0)
     dry-core (0.7.1)
       concurrent-ruby (~> 1.0)
-    dry-events (0.3.0)
-      concurrent-ruby (~> 1.0)
-      dry-core (~> 0.5, >= 0.5)
     dry-inflector (0.2.1)
     dry-initializer (3.1.1)
     dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-matcher (0.9.0)
-      dry-core (~> 0.4, >= 0.4.8)
     dry-monads (1.4.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.7)
@@ -43,11 +38,6 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-types (~> 1.5)
       ice_nine (~> 0.11)
-    dry-transaction (0.13.3)
-      dry-container (>= 0.2.8)
-      dry-events (>= 0.1.0)
-      dry-matcher (>= 0.7.0)
-      dry-monads (>= 0.4.0)
     dry-types (1.5.1)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
@@ -66,6 +56,7 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-inflector (~> 0.1)
       tilt (~> 2.0, >= 2.0.6)
+    fakeweb (1.3.0)
     ice_nine (0.11.2)
     json (2.7.1)
     kwalify (0.7.2)
@@ -178,10 +169,10 @@ DEPENDENCIES
   dry-initializer
   dry-monads
   dry-struct
-  dry-transaction
   dry-types
   dry-validation
   dry-view
+  fakeweb
   multi_json
   mysql2
   nokogiri (~> 1.16)

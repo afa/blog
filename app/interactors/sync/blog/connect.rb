@@ -21,7 +21,7 @@ module Sync
       private
 
       def login
-        challenge = yield Sync::Blog::PrepareChallenge.call(source:)
+        challenge = yield Sync::Blog::PrepareChallenge.call(source:, request_handler:)
         payload = { 'mode' => 'login' }.merge(challenge)
         request_handler
           .call(payload, source:)
