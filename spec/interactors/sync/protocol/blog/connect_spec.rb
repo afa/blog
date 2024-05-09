@@ -2,9 +2,9 @@ require 'spec_helper'
 require 'dry/monads'
 include Dry::Monads[:result]
 
-RSpec.describe Sync::Blog::Connect do
+RSpec.describe Sync::Protocol::Blog::Connect do
   let(:interactor_call) { described_class.call(source:, request_handler:) }
-  let(:request_handler) { class_double(Sync::Blog::Request) }
+  let(:request_handler) { class_double(Sync::Protocol::Blog::Request) }
 
   context 'when valid' do
     include_context('with auth challenge')
