@@ -21,7 +21,7 @@ module Sync
       }.freeze
 
       PROCESS_FIELDS_RULES = {
-          /^prop_([1234567890]+)_value$/ => ->(val) { URI.decode_www_form_component(val) },
+        /^prop_([1234567890]+)_value$/ => ->(val) { URI.decode_www_form_component(val) },
         /^events_([1234567890]+)_eventtime$/ => ->(val) { DateTime.strptime(val, '%Y-%m-%d %H:%M:%S') },
         /^events_([1234567890]+)_subject$/ => ->(val) { URI.decode_www_form_component(val) },
         /^events_([1234567890]+)_event$/ => ->(val) { URI.decode_www_form_component(val) }
@@ -47,7 +47,7 @@ module Sync
       def convert_fields(data, rules)
         Try {
           data.each_with_object({}) { |(k, f), obj|
-            m = rules.find { |rexp, l| rexp =~ k }
+            m = rules.find { |rexp, _| rexp =~ k }
             obj[k] = m ? m[1].call(f) : f
           }
         }.to_result
