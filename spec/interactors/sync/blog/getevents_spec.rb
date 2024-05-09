@@ -23,8 +23,8 @@ RSpec.describe Sync::Blog::Getevents do
       {
         'events' => [
           {
-            'anum' => '228', 'event' => 'testevent', 'eventtime' => '2006-09-10 17:10:00', 'itemid' => '108',
-            'subject' => '[mobile]', 'url' => 'https://afa-at-work.livejournal.com/27876.html'
+            'anum' => '228', 'event' => 'testevent', 'eventtime' => DateTime.new(2006, 9, 10, 17, 10, 0),
+            'itemid' => '108', 'subject' => '[mobile]', 'url' => 'https://afa-at-work.livejournal.com/27876.html'
           }
         ],
         'events_count' => '1',
