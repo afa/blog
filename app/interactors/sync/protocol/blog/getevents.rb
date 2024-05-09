@@ -30,7 +30,7 @@ module Sync
 
         option :source
         option :last_sync, default: -> { false }
-        option :request_handler, default: -> { Sync::Blog::Request }
+        option :request_handler, default: -> { Sync::Protocol::Blog::Request }
 
         def call
           challenge = yield Sync::Protocol::Blog::PrepareChallenge.call(source:, request_handler:)

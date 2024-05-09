@@ -12,7 +12,7 @@ module Sync
       def all
         return cached_data if cache?
 
-        data = yield Sync::Blog::Getevents.call(last_sync:, source:)
+        data = yield Sync::Protocol::Blog::Getevents.call(last_sync:, source:)
         refresh_cache(data)
         cached_data
       end

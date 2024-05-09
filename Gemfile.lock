@@ -157,6 +157,7 @@ GEM
     thor (1.2.1)
     tilt (2.0.11)
     unicode-display_width (2.5.0)
+    zeitwerk (2.6.13)
 
 PLATFORMS
   arm64-darwin-22
@@ -192,6 +193,7 @@ DEPENDENCIES
   sinatra-contrib
   slim
   thor
+  zeitwerk
 
 BUNDLED WITH
    2.2.26
