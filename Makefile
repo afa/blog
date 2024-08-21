@@ -4,6 +4,7 @@ test: rspec
 
 Gemfile.lock: Gemfile
 	bundle install
+bundle: Gemfile.lock
 rubocop: Gemfile.lock
 	bundle exec rubocop
 reek: Gemfile.lock
