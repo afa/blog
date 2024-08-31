@@ -16,23 +16,17 @@ module Sync
         # in strategy update current snapshot and build diffs to previous syncs
         # update current session to process later differences
         session = yield setup
-        pp session
-        strategy = yield determine_strategy.tap{|z|pp z}
-        pp strategy
-        repo = yield repository(session).tap{|x|pp x}
-        pp repo
+        strategy = yield determine_strategy
+        repo = yield repository(session)
         repo
           .all
           .bind { |data|
-            pp :a
             strategy.call(data)
           }
           .alt_map { |err|
-            pp :b, err.trace
             logger(err)
           }
           .fmap { |_|
-            pp :c
             save_session(session)
           }
       end

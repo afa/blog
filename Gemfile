@@ -32,7 +32,7 @@ gem 'mysql2'
 gem 'nokogiri', '~>1.16.5'
 
 group :development, :test do
-  gem 'rexml', '~>3.3.3' # for rubocop, audited dep
+  gem 'rexml', '~>3.3.6' # for rubocop, audited dep
   gem 'rubocop'
   gem 'rubocop-sequel'
   gem 'rubocop-rspec'
