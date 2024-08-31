@@ -5,7 +5,6 @@ RSpec.describe(Sync::Blog::SyncronizedChunkRepository) do
     let(:repository_call) { described_class.new(cache_handler: cache, source:).all }
     let(:cache) { instance_double(Sync::Blog::SyncronizedChunkInstanceCache) }
     let(:source) { Sync::Source.new(api_url: 'http://localhost/', login_options: {}) }
-    let(:value) { repository_call.value! }
     let(:answer) {
       {
         'events' => [
@@ -31,8 +30,8 @@ RSpec.describe(Sync::Blog::SyncronizedChunkRepository) do
     }
 
     before do
-      allow(cache).to receive(:cache?).and_return(false)
-      allow(cache).to receive(:refresh_cache).and_return(Success(result))
+      allow(cache).to receive_messages(cache?: false,
+                                       refresh_cache: Success(result))
       allow(Sync::Protocol::Blog::Getevents).to receive(:call).and_return(Success(answer))
     end
 
@@ -41,7 +40,7 @@ RSpec.describe(Sync::Blog::SyncronizedChunkRepository) do
     end
 
     it 'returns valid values' do
-      expect(value).to eq(result)
+      expect(repository_call.value!).to eq(result)
     end
   end
 end
