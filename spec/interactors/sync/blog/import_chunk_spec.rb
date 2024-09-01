@@ -10,14 +10,21 @@ RSpec.describe Sync::Blog::ImportChunk do
   let(:cache) { Sync::Blog::SyncronizedChunkInstanceCache.new }
   let(:data) {
     [
-      {"anum"=>"187", "event"=>"ev1", "eventtime"=>DateTime.new(2004, 07, 22, 17, 43, 00), "itemid"=>"1", "subject"=>"s1", "url"=>"https://afa-at-work.livejournal.com/443.html", "props"=>[{"name"=>"personifi_tags", "value"=>"nterms:yes"}]},
-      {"anum"=>"121", "event"=>"ev2", "eventtime"=>DateTime.new(2004, 7, 24, 18, 38, 0), "itemid"=>"2", "subject"=>"s2", "url"=>"https://afa-at-work.livejournal.com/633.html", "props"=>[{"name"=>"personifi_tags", "value"=>"nterms:yes"}]}
+      {
+        'anum' => '187', 'event' => 'ev1', 'eventtime' => DateTime.new(2004, 7, 22, 17, 43, 0), 'itemid' => '1',
+        'subject' => 's1', 'url' => 'https://afa-at-work.livejournal.com/443.html',
+        'props' => [{ 'name' => 'personifi_tags', 'value' => 'nterms:yes' }]
+      },
+      {
+        'anum' => '121', 'event' => 'ev2', 'eventtime' => DateTime.new(2004, 7, 24, 18, 38, 0), 'itemid' => '2',
+        'subject' => 's2', 'url' => 'https://afa-at-work.livejournal.com/633.html',
+        'props' => [{ 'name' => 'personifi_tags', 'value' => 'nterms:yes' }]
+      }
     ]
   }
 
   before do
-    allow(cache).to receive(:cache?).and_return(true)
-    allow(cache).to receive(:cached_data).and_return(Success(data))
+    allow(cache).to receive_messages(cache?: true, cached_data: Success(data))
   end
 
   context 'when diff from exist session' do

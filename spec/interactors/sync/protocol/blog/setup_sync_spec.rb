@@ -7,7 +7,9 @@ RSpec.describe(Sync::Protocol::Blog::SetupSync) do
 
   context 'with success path' do
     context 'with prev session' do
-      let!(:parent) { Sync::Session.create(kind: 'blog', timestamp: 10, source_id: source.id) }
+      before do
+        Sync::Session.create(kind: 'blog', timestamp: 10, source_id: source.id)
+      end
 
       it 'return success' do
         expect(interactor_call).to be_success
