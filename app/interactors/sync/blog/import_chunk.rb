@@ -1,8 +1,10 @@
 module Sync
   module Blog
     class ImportChunk < BaseInteractor
-      # загружает очередную порцию жж записей, берет стратегию и протокол из source, параметры для порции из last_session
+      # загружает очередную порцию жж записей, берет стратегию и протокол из source, параметры для порции из
+      # last_session
       option :source
+      option :cache, default: -> { Sync::Blog::SyncronizedChunkInstanceCache.new }
       # option :last_session
 
       def call
@@ -21,12 +23,16 @@ module Sync
         repo
           .all
           .bind { |data|
-            strategy.call(data)
+            strategy.call(session:, data:)
           }
           .alt_map { |err|
             logger(err)
           }
           .fmap { |_|
+            stamp = repo.all.value_or([]).max_by { |item| item['eventtime'] }.fetch('eventtime', nil)
+            session.timestamp = stamp.to_time.to_i
+          }
+          .bind { |_|
             save_session(session)
           }
       end
@@ -46,14 +52,21 @@ module Sync
           Sync::Blog::SyncronizedChunkRepository.new(
             source:,
             last_sync: session.sync_options['last_sync'],
-            cache_handler: Sync::Blog::SyncronizedChunkInstanceCache.new
+            cache_handler: cache
           )
         }
           .to_result
       end
 
       def logger(err)
-        pp err
+        App.logger.error err.pretty_inspect
+      end
+
+      def save_session(session)
+        Try {
+          session.save_changes
+        }
+          .to_result
       end
     end
   end
