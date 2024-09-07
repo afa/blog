@@ -5,6 +5,8 @@ module Sync
       # и атрибутам
       # для предыдущих версий оставляет только измененные инстансы и атрибуты (для -1 - те которые изменены в ней по
       # сравнению с текущей)
+      # основные отличия объектов от ассоциаций -- объекты белонгс ту, линк хранится в основном итеме, название
+      #  переменной берется из хэша объектс конфига
 
       option :session
       option :data
@@ -12,8 +14,8 @@ module Sync
       def call
         config = yield configuration
         extracted = yield parse(config)
-        pp items
-        saved = yield save_items(extracted)
+        pp extracted
+        saved = yield save_items(session.source.structure, extracted)
         yield save_attributes(extracted, config).alt_map { rollback(saved) }
         session.update_fields(state: :parsed)
         yield build_diff
@@ -31,6 +33,7 @@ module Sync
           .to_result
       end
 
+      # TODO: refactor methods
       def parse(config)
         # scan each hash^ key is item type, val is array with hashes each with key-attr, store each item with tablename
         # store unknown attributes
@@ -49,10 +52,12 @@ module Sync
               val.each { |k, v| extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k) }
             end
           end
+          items
         }
           .to_result
       end
 
+      # переписать под сохранение линка (связи) в основной объект, в переменную из хэша объектс
       def extract_object(config, key, val, local_id)
         cfg = config[key]
         item = { id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind] }
@@ -79,10 +84,23 @@ module Sync
         end
       end
 
-      def save_items(extracted)
-
+      def save_items(structure, extracted)
+        list = extracted.each_with_object([]) do |item, arr|
+          arr << Try {
+            ext_key = item[:attributes][structure.structure_rules[item[:kind]]['key']]
+            Sync::Item.create(
+              key: item[:kind],
+              session_id: session.pk,
+              structure_id: structure.pk,
+              external_key: ext_key
+            )
+          }
+            .to_result
+        end
+        List(list).typed(Try).traverse
       end
 
+      # after save session parsed
       def save_attributes(extracted, config)
 
       end

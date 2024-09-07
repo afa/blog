@@ -22,12 +22,13 @@ RSpec.describe Sync::Strategy::RunningTotal do
   let(:rules) {
     {
       posts: {
+        key: 'anum',
         attributes: {
           anum: nil, event: nil, eventtime: nil, itemid: nil, subject: nil, url: nil
         },
         objects: {}, associations: %i[props]
       },
-      props: {attributes: {name: nil, value: nil}, objects: {}, associations: []}
+      props: {key: 'name', attributes: {name: nil, value: nil}, objects: {}, associations: []}
     }
   }
 
