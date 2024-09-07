@@ -14,9 +14,8 @@ module Sync
       def call
         config = yield configuration
         extracted = yield parse(config)
-        pp extracted
         saved = yield save_items(session.source.structure, extracted)
-        yield save_attributes(extracted, config).alt_map { rollback(saved) }
+        yield save_attributes(extracted, config).alt_map { rollback }
         session.update(state: :parsed)
         yield build_diff
         session.update(state: :processed)
@@ -40,7 +39,6 @@ module Sync
         Try {
           data.each do |key, tab|
             cfg = config[key]
-            pp cfg
             tab.each do |val, item|
               item = { id: items_id, kind: key, attributes: {}, dirty: {} }
               val.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
@@ -116,15 +114,17 @@ module Sync
           .to_result
       end
 
-      def rollback(items)
-
+      def rollback
+        Sync::Attribute.where(item_id: session.items.map(&:pk)).delete
+        session.remove_all_items
       end
-      def build_diff
 
+      def build_diff
+        Success()
       end
 
       def apply_diff
-
+        Success()
       end
 
       def items
