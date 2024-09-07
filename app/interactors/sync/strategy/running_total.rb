@@ -17,9 +17,9 @@ module Sync
         pp extracted
         saved = yield save_items(session.source.structure, extracted)
         yield save_attributes(extracted, config).alt_map { rollback(saved) }
-        session.update_fields(state: :parsed)
+        session.update(state: :parsed)
         yield build_diff
-        session.update_fields(state: :processed)
+        session.update(state: :processed)
         apply_diff
       end
 
@@ -88,12 +88,13 @@ module Sync
         list = extracted.each_with_object([]) do |item, arr|
           arr << Try {
             ext_key = item[:attributes][structure.structure_rules[item[:kind]]['key']]
-            Sync::Item.create(
+            model = Sync::Item.create(
               key: item[:kind],
               session_id: session.pk,
               structure_id: structure.pk,
               external_key: ext_key
             )
+            item[:model_id] = model.pk
           }
             .to_result
         end
@@ -102,7 +103,17 @@ module Sync
 
       # after save session parsed
       def save_attributes(extracted, config)
-
+        Try {
+          extracted.each do |item|
+            item[:attributes].each do |k, v|
+              Sync::Attribute.create(key: k, value: v, dirty: false, item_id: item[:model_id])
+            end
+            item[:dirty].each do |k, v|
+              Sync::Attribute.create(key: k, value: v, dirty: true, item_id: item[:model_id])
+            end
+          end
+        }
+          .to_result
       end
 
       def rollback(items)
