@@ -15,7 +15,7 @@ module Sync
         config = yield configuration
         extracted = yield parse(config)
         saved = yield save_items(session.source.structure, extracted)
-        yield save_attributes(extracted, config).alt_map { rollback }
+        yield save_attributes(extracted).alt_map { rollback }
         session.update(state: :parsed)
         yield build_diff
         session.update(state: :processed)
@@ -26,9 +26,9 @@ module Sync
 
       def configuration
         Maybe(session)
-          .maybe { |s| s.source }
-          .maybe { |s| s.structure }
-          .maybe { |s| s.structure_rules }
+          .maybe(&:source)
+          .maybe(&:structure)
+          .maybe(&:structure_rules)
           .to_result
       end
 
@@ -39,15 +39,17 @@ module Sync
         Try {
           data.each do |key, tab|
             cfg = config[key]
-            tab.each do |val, item|
+            tab.each do |val|
               item = { id: items_id, kind: key, attributes: {}, dirty: {} }
               val.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
               (val.keys - cfg['attributes'].keys - cfg['objects'].keys - cfg['associations']).each do |k|
                 item[:dirty].merge!(k => val[k])
               end
               items << item
-              val.each { |k, v| extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k) }
-              val.each { |k, v| extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k) }
+              val.each { |k, v|
+                extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
+                extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
+              }
             end
           end
           items
@@ -64,8 +66,10 @@ module Sync
           item[:dirty].merge!(k => val[k])
         end
         items << item
-        val.each { |k, v| extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k) }
-        val.each { |k, v| extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k) }
+        val.each { |k, v|
+          extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
+          extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
+        }
       end
 
       def extract_associations(config, key, val, local_id)
@@ -77,8 +81,10 @@ module Sync
             item[:dirty].merge!(k => value[k])
           end
           items << item
-          value.each { |k, v| extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k) }
-          value.each { |k, v| extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k) }
+          value.each { |k, v|
+            extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
+            extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
+          }
         end
       end
 
@@ -100,7 +106,7 @@ module Sync
       end
 
       # after save session parsed
-      def save_attributes(extracted, config)
+      def save_attributes(extracted)
         Try {
           extracted.each do |item|
             item[:attributes].each do |k, v|

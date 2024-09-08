@@ -28,7 +28,7 @@ RSpec.describe Sync::Strategy::RunningTotal do
         },
         objects: {}, associations: %i[props]
       },
-      props: {key: 'name', attributes: {name: nil, value: nil}, objects: {}, associations: []}
+      props: { key: 'name', attributes: { name: nil, value: nil }, objects: {}, associations: [] }
     }
   }
 
