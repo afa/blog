@@ -29,8 +29,12 @@ module Sync
             logger(err)
           }
           .fmap { |_|
-            stamp = repo.all.value_or([]).max_by { |item| item['eventtime'] }.fetch('eventtime', nil)
-            session.timestamp = stamp.to_time.to_i
+            stamp = repo
+                    .all
+                    .value_or({ 'posts' => [] })['posts']
+                    .max_by { |item| item['eventtime'] }
+                    .fetch('eventtime', nil)
+            session.timestamp = stamp&.to_time&.to_i
           }
           .bind { |_|
             save_session(session)

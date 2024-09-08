@@ -25,10 +25,10 @@ module Sync
       def merge_props(events, props)
         Try {
           idx = props.group_by { |hsh| hsh['itemid'] }
-          events.each_with_object([]) do |event, obj|
-            obj << event
+          events.each_with_object('posts' => []) do |event, obj|
+            obj['posts'] << event
             if idx.key?(event['itemid'])
-              obj.last.merge!({ 'props' => idx[event['itemid']].map { |item| item.slice('name', 'value') } })
+              obj['posts'].last.merge!({ 'props' => idx[event['itemid']].map { |item| item.slice('name', 'value') } })
             end
           end
         }

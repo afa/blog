@@ -1,13 +1,5 @@
-require 'spec_helper'
-require 'dry/monads/all'
-
-RSpec.describe Sync::Blog::ImportChunk do
-  include Dry::Monads
-  let(:interactor_call) { described_class.call(source:, cache:) }
-  let(:source) {
-    Sync::Source.create(name: 'a', kind: 'blog', api_url: '', login_options: {}, strategy: nil)
-  }
-  let(:cache) { Sync::Blog::SyncronizedChunkInstanceCache.new }
+RSpec.describe Sync::Strategy::RunningTotal do
+  let(:interactor_call) { described_class.call(data:, session:) }
   let(:data) {
     {
       'posts' => [
@@ -24,22 +16,23 @@ RSpec.describe Sync::Blog::ImportChunk do
       ]
     }
   }
+  let(:session) { Sync::Session.create kind: 'blog', source_id: source.id }
+  let(:source) { Sync::Source.create kind: 'blog', name: 'a' }
+  let!(:structure) { Sync::Structure.create(source_id: source.id, structure_rules: rules) }
+  let(:rules) {
+    {
+      posts: {
+        key: 'anum',
+        attributes: {
+          anum: nil, event: nil, eventtime: nil, itemid: nil, subject: nil, url: nil
+        },
+        objects: {}, associations: %i[props]
+      },
+      props: { key: 'name', attributes: { name: nil, value: nil }, objects: {}, associations: [] }
+    }
+  }
 
-  before do
-    allow(cache).to receive_messages(cache?: true, cached_data: Success(data))
-  end
-
-  context 'when diff from exist session' do
-    before do
-      Sync::Session.create(source_id: source.id, timestamp: 10)
-    end
-
-    it 'return success' do
-      expect(interactor_call).to be_success
-    end
-  end
-
-  context 'when initial import' do
+  context 'with success path' do
     it 'return success' do
       expect(interactor_call).to be_success
     end

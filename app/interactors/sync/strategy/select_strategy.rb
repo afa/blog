@@ -5,8 +5,10 @@ module Sync
 
       LIST = {
         nil => Sync::Strategy::ZeroStrategy,
+        '' => Sync::Strategy::ZeroStrategy,
         'running_total' => Sync::Strategy::RunningTotal
       }.freeze
+
       def call
         Maybe(LIST[source&.strategy]).to_result
       end

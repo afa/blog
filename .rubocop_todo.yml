@@ -67,11 +67,7 @@ Layout/SpaceInsideHashLiteralBraces:
 # SupportedStyles: final_newline, final_blank_line
 Layout/TrailingEmptyLines:
   Exclude:
-    - 'Thorfile'
-    - 'app/models/forum/user.rb'
     - 'app/views/link/index_view.rb'
-    - 'boot.rb'
-    - 'db/migrate/1688506421_create_fast_link_options.rb'
 
 # Offense count: 1
 # Configuration parameters: AllowComments.
@@ -105,7 +101,6 @@ Lint/UnusedBlockArgument:
 # Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods, IgnoreNotImplementedMethods.
 Lint/UnusedMethodArgument:
   Exclude:
-    - 'app.rb'
     - 'app/services/create_account.rb'
     - 'app/services/create_user.rb'
     - 'app/services/link/create.rb'
@@ -151,8 +146,6 @@ Style/BlockComments:
 # SupportedStyles: nested, compact
 Style/ClassAndModuleChildren:
   Exclude:
-    - 'app/models/audit/formatter.rb'
-    - 'app/models/audit/log.rb'
     - 'app/services/link/prepare_reserved.rb'
 
 # Offense count: 34
@@ -178,8 +171,7 @@ Style/FrozenStringLiteralComment:
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 Style/IfUnlessModifier:
-  Exclude:
-    - 'boot.rb'
+  Enabled: true
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -187,7 +179,6 @@ Style/IfUnlessModifier:
 # SupportedStyles: literals, strict
 Style/MutableConstant:
   Exclude:
-    - 'app/models/audit/log.rb'
     - 'app/services/link/create.rb'
 
 # Offense count: 2
@@ -200,17 +191,14 @@ Style/SelfAssignment:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Mode.
 Style/StringConcatenation:
-  Exclude:
-    - 'boot.rb'
+  Enabled: true
 
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
 # SupportedStyles: single_quotes, double_quotes
 Style/StringLiterals:
-  Exclude:
-    - 'Gemfile'
-    - 'app.rb'
+  Enabled: true
 
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
