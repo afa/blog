@@ -24,7 +24,6 @@ GEM
     dry-core (0.9.1)
       concurrent-ruby (~> 1.0)
       zeitwerk (~> 2.6)
-    dry-equalizer (0.3.0)
     dry-inflector (0.2.1)
     dry-initializer (3.1.1)
     dry-logic (1.2.0)
@@ -56,10 +55,10 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-initializer (~> 3.0)
       dry-schema (~> 1.9, >= 1.9.1)
-    dry-view (0.7.0)
+    dry-view (0.7.1)
+      concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.1)
-      dry-core (~> 0.2)
-      dry-equalizer (~> 0.2)
+      dry-core (~> 0.5, >= 0.5)
       dry-inflector (~> 0.1)
       tilt (~> 2.0, >= 2.0.6)
     fakeweb (1.3.0)
@@ -182,7 +181,7 @@ DEPENDENCIES
   dry-struct
   dry-types
   dry-validation
-  dry-view
+  dry-view (= 0.7.1)
   fakeweb
   multi_json
   mysql2

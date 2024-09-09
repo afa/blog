@@ -15,7 +15,7 @@ gem 'sequel'
 
 # Dry
 gem 'dry-configurable', '~>0.13.0'
-gem 'dry-view'
+gem 'dry-view', '=0.7.1'
 gem 'dry-validation'
 gem 'dry-struct'
 gem 'dry-types'
