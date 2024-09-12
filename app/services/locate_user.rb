@@ -1,9 +1,7 @@
 class LocateUser < BaseInteractor
   param :params
 
-  private
-
-  def locate
+  def call
     uname = params['user']
     acc = Account.where(login: uname).first
     return Failure(:not_found) unless acc

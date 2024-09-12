@@ -1,12 +1,12 @@
 class LinkManager < Sinatra::Base
   helpers Sinatra::Cookies
   get '/' do
-    account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
+    account = TakeUser.call(hash: cookies[:user]).value_or(nil)
     Link::IndexView.new.call(account:, params:).to_s
   end
 
   get '/:id/edit' do
-    account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
+    account = TakeUser.call(hash: cookies[:user]).value_or(nil)
     link = FastLink.where(author_id: account.user.id, id: params['id'].to_i).first
     if link
         Link::EditView.new.call(account:, link:).to_s
@@ -33,8 +33,8 @@ class LinkManager < Sinatra::Base
   end
 
   post '/' do
-    account = TakeUser.new.call(hash: cookies[:user]).value_or(nil)
-    Link::Create.new.call(account:, params:) do |m|
+    account = TakeUser.call(hash: cookies[:user]).value_or(nil)
+    Link::Create.call(account:, params:) do |m|
       m.success do |val|
         Link::CreateView.new.call(account:, link: val).to_s
       end

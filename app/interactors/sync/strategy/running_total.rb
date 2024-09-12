@@ -13,12 +13,16 @@ module Sync
 
       def call
         config = yield configuration
+        # E
         extracted = yield parse(config)
-        saved = yield save_items(session.source.structure, extracted)
+        # T
+        saved = yield save_items(session.source.structure, extracted).alt_map { rollback }
         yield save_attributes(extracted).alt_map { rollback }
         session.update(state: :parsed)
+        yield sync_back
         yield build_diff
         session.update(state: :processed)
+        # L
         apply_diff
       end
 
@@ -41,15 +45,7 @@ module Sync
             cfg = config[key]
             tab.each do |val|
               item = { id: items_id, kind: key, attributes: {}, dirty: {} }
-              val.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
-              (val.keys - cfg['attributes'].keys - cfg['objects'].keys - cfg['associations']).each do |k|
-                item[:dirty].merge!(k => val[k])
-              end
-              items << item
-              val.each { |k, v|
-                extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
-                extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
-              }
+              extract(val, item, cfg, config)
             end
           end
           items
@@ -60,32 +56,32 @@ module Sync
       # переписать под сохранение линка (связи) в основной объект, в переменную из хэша объектс
       def extract_object(config, key, val, local_id)
         cfg = config[key]
-        item = { id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind] }
-        val.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
-        (val.keys - cfg['attributes'].keys - cfg['objects'].keys - cfg['associations']).each do |k|
-          item[:dirty].merge!(k => val[k])
-        end
-        items << item
-        val.each { |k, v|
-          extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
-          extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
+        item = {
+          id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind]
         }
+        extract(val, item, cfg, config)
       end
 
       def extract_associations(config, key, val, local_id)
         cfg = config[key]
         val.each do |value|
-          item = { id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind] }
-          value.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
-          (value.keys - cfg['attributes'].keys - cfg['objects'].keys - cfg['associations']).each do |k|
-            item[:dirty].merge!(k => value[k])
-          end
-          items << item
-          value.each { |k, v|
-            extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
-            extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
+          item = {
+            id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind]
           }
+          extract(value, item, cfg, config)
         end
+      end
+
+      def extract(value, item, cfg, config)
+        value.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
+        (value.keys - cfg['attributes'].keys - cfg['objects'].keys - cfg['associations']).each do |k|
+          item[:dirty].merge!(k => value[k])
+        end
+        items << item
+        value.each { |k, v|
+          extract_object(config, k, v, item[:id]) if cfg['objects'].key?(k)
+          extract_associations(config, k, v, item[:id]) if cfg['associations'].include?(k)
+        }
       end
 
       def save_items(structure, extracted)
@@ -125,8 +121,18 @@ module Sync
         session.remove_all_items
       end
 
+      def sync_back
+        Try {
+          prev = Sync::Session.where(tail_id: session.pk).order(Sequel.desc(:id)).first
+          copy_old_unless_new(prev, session)
+        }
+          .to_result
+      end
+
+      def copy_old_unless_new(prev, session)
+      end
+
       def build_diff
-        Success()
       end
 
       def apply_diff

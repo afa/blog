@@ -3,4 +3,3 @@ module Forum
     one_to_many :attachments, key: :userid, class: Forum::Attachment
   end
 end
-

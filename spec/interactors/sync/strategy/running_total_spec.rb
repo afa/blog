@@ -18,7 +18,6 @@ RSpec.describe Sync::Strategy::RunningTotal do
   }
   let(:session) { Sync::Session.create kind: 'blog', source_id: source.id }
   let(:source) { Sync::Source.create kind: 'blog', name: 'a' }
-  let!(:structure) { Sync::Structure.create(source_id: source.id, structure_rules: rules) }
   let(:rules) {
     {
       posts: {
@@ -32,9 +31,26 @@ RSpec.describe Sync::Strategy::RunningTotal do
     }
   }
 
+  before do
+    Sync::Structure.create(source_id: source.id, structure_rules: rules)
+  end
+
   context 'with success path' do
-    it 'return success' do
-      expect(interactor_call).to be_success
+    context 'with only initial import' do
+      it 'return success' do
+        expect(interactor_call).to be_success
+      end
+    end
+
+    context 'when exist parent import' do
+      before do
+        Sync::Session.create kind: 'blog', source_id: source.id, tail_id: session.id
+        session.update(timestamp: 10)
+      end
+
+      it 'return success' do
+        expect(interactor_call).to be_success
+      end
     end
   end
 end

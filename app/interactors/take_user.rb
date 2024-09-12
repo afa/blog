@@ -1,9 +1,7 @@
-class TakeUser
+class TakeUser < BaseInteractor
   option :hash
 
-  private
-
-  def take
+  def call
     acc = Account.where(token: hash).first
     return Failure(:unlogged) unless acc
 
