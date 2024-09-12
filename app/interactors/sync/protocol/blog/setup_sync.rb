@@ -5,7 +5,7 @@ module Sync
         option :source
 
         def call
-          parent = yield find_parent.or_fmap { nil }
+          parent = yield find_parent.or { make_parent }
           params = yield make_params(parent)
           make_session(parent, params)
         end
@@ -17,10 +17,14 @@ module Sync
             .to_result
         end
 
+        def make_parent
+          Try { Sync::Session.create(timestamp: nil, tail_id: nil, kind: source.kind) }.to_result
+        end
+
         def make_params(session)
           Try {
             # sync_options -> last_sync
-            if session
+            if session&.timestamp
               { 'sync_options' => { 'last_sync' => session.timestamp } }
             else
               {}
@@ -33,10 +37,8 @@ module Sync
           Try {
             App.db.transaction do
               session = Sync::Session.create({ kind: source.kind, source_id: source.id }.merge(params))
-              if head
-                head.tail_id = session.id
-                head.save_changes
-              end
+              head.tail_id = session.id
+              head.save_changes
               session
             end
           }

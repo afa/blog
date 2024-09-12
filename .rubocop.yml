@@ -5,6 +5,9 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   NewCops: enable
+  Exclude:
+    - app/models/similarity/*
+    - app/interactors/similarity/**/*
 
 Style/Documentation:
   Enabled: false

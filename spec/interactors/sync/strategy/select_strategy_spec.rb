@@ -1,6 +1,6 @@
 RSpec.describe Sync::Strategy::SelectStrategy do
   let(:interactor_call) { described_class.call(source:) }
-  let(:value) { interactor_call.value!}
+  let(:value) { interactor_call.value! }
 
   context 'with blank strategy' do
     let(:source) { Sync::Source.new name: 'a', strategy: '' }

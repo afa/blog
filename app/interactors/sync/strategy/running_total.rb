@@ -44,7 +44,6 @@ module Sync
           data.each do |key, tab|
             cfg = config[key]
             tab.each do |val|
-              pp :p
               item = { id: items_id, kind: key, attributes: {}, dirty: {} }
               extract(val, item, cfg, config)
             end
@@ -56,25 +55,25 @@ module Sync
 
       # переписать под сохранение линка (связи) в основной объект, в переменную из хэша объектс
       def extract_object(config, key, val, local_id)
-        pp :o
         cfg = config[key]
-        item = { id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind] }
+        item = {
+          id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind]
+        }
         extract(val, item, cfg, config)
       end
 
       def extract_associations(config, key, val, local_id)
-        pp :a
         cfg = config[key]
         val.each do |value|
-          item = { id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind] }
+          item = {
+            id: items_id, kind: key, attributes: {}, dirty: {}, linked_to: local_id, linked: items[local_id][:kind]
+          }
           extract(value, item, cfg, config)
         end
       end
 
       def extract(value, item, cfg, config)
-        pp :e
         value.each { |k, v| item[:attributes][k] = v if cfg['attributes'].key?(k) }
-        pp value
         (value.keys - cfg['attributes'].keys - cfg['objects'].keys - cfg['associations']).each do |k|
           item[:dirty].merge!(k => value[k])
         end
@@ -125,16 +124,15 @@ module Sync
       def sync_back
         Try {
           prev = Sync::Session.where(tail_id: session.pk).order(Sequel.desc(:id)).first
-          # blank - no need sync
-          if prev
-            copy_old_unless_new(prev, session)
-          end
+          copy_old_unless_new(prev, session)
         }
           .to_result
       end
 
+      def copy_old_unless_new(prev, session)
+      end
+
       def build_diff
-        Success()
       end
 
       def apply_diff

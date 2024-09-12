@@ -5,7 +5,7 @@ class AppManager < Sinatra::Base
   end
 
   post '/login' do
-    LocateUser.new.call(params) do |m|
+    LocateUser.call(params) do |m|
       m.success do |hash|
         cookies[:user] = hash
         redirect '/'
@@ -22,7 +22,7 @@ class AppManager < Sinatra::Base
   end
 
   get '/' do
-    TakeUser.new.call(hash: cookies[:user]) do |m|
+    TakeUser.call(hash: cookies[:user]) do |m|
       m.success { |account| DashboardView.new.call(account:, params:).to_s }
       m.failure { redirect '/login' }
     end
